@@ -3,7 +3,7 @@ import { ZodSchema } from 'zod';
 import createHttpError from 'http-errors';
 
 export const validateBody = (schema: ZodSchema) => {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request, _res: Response, next: NextFunction) => {
     try {
       req.body = schema.parse(req.body);
       next();
@@ -14,23 +14,12 @@ export const validateBody = (schema: ZodSchema) => {
 };
 
 export const validateParams = (schema: ZodSchema) => {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request, _res: Response, next: NextFunction) => {
     try {
       schema.parse(req.params);
       next();
     } catch (error) {
       next(createHttpError(400, error as Error));
-    }
-  };
-};
-
-export const validateQuery = (schema: ZodSchema) => {
-  return async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      req.query = schema.parse(req.query) as Request['query'];
-      next();
-    } catch (error) {
-      next(error);
     }
   };
 };

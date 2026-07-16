@@ -1,5 +1,4 @@
 import { Response, NextFunction } from 'express';
-import { z } from 'zod';
 import { AuthRequest } from '../../types/express';
 import { getTasksService } from '..//..//services/task.service.js';
 import { getTasksSchema } from '../../validators/tasksValidation.js';

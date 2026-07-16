@@ -8,39 +8,29 @@ import { deleteTask } from '../controllers/tasks/deleteTask.js';
 import { getTaskById } from '../controllers/tasks/getTaskById.js';
 
 import {
-  getTasksSchema,
   createTaskSchema,
   updateTaskSchema,
   taskIdSchema,
 } from '../validators/tasksValidation';
 
-import {
-  validateBody,
-  validateParams,
-  validateQuery,
-} from '../middleware/validateBody';
+import { validateBody, validateParams } from '../middleware/validateBody';
 
 const tasksRoute = Router();
 
-const authLimiter = rateLimit({
+const taskLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 10,
-  message: { message: 'Too many attempts. Try it later.' },
+  max: 300,
+  message: { message: 'Too many requests. Please try again later.' },
 });
 
 tasksRoute.use(authenticate);
+tasksRoute.use(taskLimiter);
 
-tasksRoute.post('/', authLimiter, validateBody(createTaskSchema), createTask);
-tasksRoute.get('/', authLimiter, getTasks);
-tasksRoute.get(
-  '/:taskId',
-  authLimiter,
-  validateParams(taskIdSchema),
-  getTaskById,
-);
+tasksRoute.post('/', validateBody(createTaskSchema), createTask);
+tasksRoute.get('/', getTasks);
+tasksRoute.get('/:taskId', validateParams(taskIdSchema), getTaskById);
 tasksRoute.patch(
   '/:taskId',
-  authLimiter,
   validateParams(taskIdSchema),
   validateBody(updateTaskSchema),
   updateTask,
