@@ -17,9 +17,15 @@ app.use(cors());
 app.use(logger);
 app.use(express.json());
 
+app.get('/', (req, res) => {
+  res.status(200).json({
+    status: 'success',
+    message: 'Welcome to the API! Backend is up and running.',
+  });
+});
+
 app.use('/auth', authRoute);
 app.use('/tasks', tasksRoute);
-
 app.use('/user', userRoute);
 
 app.use(notFoundHandler);
