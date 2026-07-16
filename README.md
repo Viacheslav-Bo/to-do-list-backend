@@ -1,5 +1,16 @@
 # To-Do List Backend
 
+![Node.js](https://img.shields.io/badge/Node.js-20-339933?logo=node.js&logoColor=white)
+![Express](https://img.shields.io/badge/Express-5-000000?logo=express&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-6-3178C6?logo=typescript&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-8.0-47A248?logo=mongodb&logoColor=white)
+![Zod](https://img.shields.io/badge/Zod-Validation-3E67B1?logo=zod&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-Docker%20Compose-2496ED?logo=docker&logoColor=white)
+![ESLint](https://img.shields.io/badge/ESLint-Code%20Quality-4B32C3?logo=eslint&logoColor=white)
+![Prettier](https://img.shields.io/badge/Prettier-Formatted-F7B93E?logo=prettier&logoColor=white)
+![Helmet](https://img.shields.io/badge/Helmet-Secured-000000?logo=helmet)
+![License](https://img.shields.io/badge/License-ISC-blue)
+
 A robust and production-ready RESTful API for a To-Do List application. Built with Node.js, Express, TypeScript, and MongoDB. The application is containerized using Docker for seamless deployment and local development.
 
 ## Tech Stack
