@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    ports:
+      - '3000:3000'
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - MONGO_URL=mongodb://database:27017/todolist
+      - JWT_SECRET=super_secret_key
+      - FRONTEND_DOMAIN=http://localhost:3001
+    depends_on:
+      - database
+
+  database:
+    image: mongo:8.0
+    container_name: todo-mongodb
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
