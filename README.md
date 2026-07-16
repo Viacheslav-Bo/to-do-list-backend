@@ -1,5 +1,3 @@
-# To-Do List Backend
-
 ![Node.js](https://img.shields.io/badge/Node.js-20-339933?logo=node.js&logoColor=white)
 ![Express](https://img.shields.io/badge/Express-5-000000?logo=express&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-6-3178C6?logo=typescript&logoColor=white)
@@ -10,6 +8,8 @@
 ![Prettier](https://img.shields.io/badge/Prettier-Formatted-F7B93E?logo=prettier&logoColor=white)
 ![Helmet](https://img.shields.io/badge/Helmet-Secured-000000?logo=helmet)
 ![License](https://img.shields.io/badge/License-ISC-blue)
+
+# To-Do List Backend
 
 A robust and production-ready RESTful API for a To-Do List application. Built with Node.js, Express, TypeScript, and MongoDB. The application is containerized using Docker for seamless deployment and local development.
 
@@ -28,7 +28,7 @@ A robust and production-ready RESTful API for a To-Do List application. Built wi
 
 You can run this project locally either using **Docker Compose** (recommended, setup in 1 click) or **manually**.
 
-### Option 1: Running with Docker Compose (Recommended 🚀)
+### Option 1: Running with Docker Compose (Recommended)
 
 You don't need to have Node.js or MongoDB installed on your machine. Everything, including a local database, runs in isolated containers.
 
