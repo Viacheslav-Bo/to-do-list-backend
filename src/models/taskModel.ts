@@ -12,15 +12,33 @@ const taskSchema = new Schema(
       trim: true,
       required: true,
     },
+    description: {
+      type: String,
+      trim: true,
+      default: '',
+    },
     priority: {
       type: Number,
       min: 1,
       max: 10,
-      default: 1,
+      default: 5,
     },
-    completed: {
+    isCompleted: {
       type: Boolean,
       default: false,
+    },
+    isPrivate: {
+      type: Boolean,
+      default: false,
+    },
+    category: {
+      type: String,
+      trim: true,
+      default: 'Todo',
+    },
+    dueDate: {
+      type: Date,
+      default: Date.now,
     },
   },
   {
@@ -29,7 +47,9 @@ const taskSchema = new Schema(
   },
 );
 
-taskSchema.index({ userId: 1, completed: 1 });
+taskSchema.index({ userId: 1, isCompleted: 1 });
 taskSchema.index({ userId: 1, priority: -1 });
+taskSchema.index({ userId: 1, category: 1 });
+taskSchema.index({ userId: 1, isCompleted: 1, dueDate: 1 });
 
 export const Task = model('Task', taskSchema);

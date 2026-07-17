@@ -3,6 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 
 import logger from './middleware/logger.js';
+import cookieParser from 'cookie-parser';
 import notFoundHandler from './middleware/notFoundHandler.js';
 import errorHandler from './middleware/errorHandler.js';
 
@@ -13,9 +14,10 @@ import userRoute from './routes/userRoute.js';
 const app = express();
 
 app.use(helmet());
+console.log('Frontend domain:', process.env.FRONTEND_DOMAIN); // Перевірте консоль сервера при запуску
 app.use(
   cors({
-    origin: process.env.FRONTEND_DOMAIN,
+    origin: process.env.FRONTEND_DOMAIN || 'http://localhost:3001',
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
@@ -23,6 +25,7 @@ app.use(
 );
 app.use(logger);
 app.use(express.json());
+app.use(cookieParser());
 
 app.get('/', (req, res) => {
   res.status(200).json({

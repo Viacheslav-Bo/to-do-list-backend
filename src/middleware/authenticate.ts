@@ -14,13 +14,11 @@ export const authenticate = async (
   next: NextFunction,
 ): Promise<void> => {
   try {
-    const authHeader = req.headers.authorization;
+    const token = req.cookies.token;
 
-    if (!authHeader?.startsWith('Bearer ')) {
-      throw createHttpError(401, 'Access token is missing or invalid');
+    if (!token) {
+      throw createHttpError(401, 'Access token is missing');
     }
-
-    const token = authHeader.replace('Bearer ', '');
 
     const jwtSecret = process.env.JWT_SECRET;
 

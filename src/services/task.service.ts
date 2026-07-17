@@ -18,7 +18,7 @@ export const calculatePagination = (page: number, limit: number) => {
 export const buildTaskFilter = (
   userId: string,
   search?: string,
-  completed?: boolean,
+  isCompleted?: boolean,
 ) => {
   const filter: Record<string, unknown> = {
     userId,
@@ -31,31 +31,41 @@ export const buildTaskFilter = (
     };
   }
 
-  if (completed !== undefined) {
-    filter.completed = completed;
+  if (isCompleted !== undefined) {
+    filter.isCompleted = isCompleted;
   }
 
   return filter;
 };
 
 export const buildTaskSort = (
-  sortBy: 'priority' | 'createdAt' = 'createdAt',
+  sortBy?: 'priority' | 'createdAt' | 'dueDate',
   sortOrder: 'asc' | 'desc' = 'desc',
-): Record<string, SortOrder> => ({
-  [sortBy]: sortOrder === 'asc' ? 1 : -1,
-});
+): Record<string, SortOrder> => {
+  const order: SortOrder = sortOrder === 'asc' ? 1 : -1;
+  if (!sortBy) {
+    return {
+      isCompleted: 1,
+      dueDate: 1,
+    };
+  }
+
+  return { [sortBy]: order } as Record<string, SortOrder>;
+};
 
 export async function getTasksService(
   userId: string,
   options: GetTasksOptions,
 ) {
-  const { page, limit, search, completed, sortBy, sortOrder } = options;
+  const { page, limit, search, isCompleted, sortBy, sortOrder } = options;
 
   const { skip } = calculatePagination(page, limit);
 
-  const filter = buildTaskFilter(userId, search, completed);
+  const filter = buildTaskFilter(userId, search, isCompleted);
 
-  const sort = buildTaskSort(sortBy, sortOrder);
+  const sort = sortBy
+    ? ({ [sortBy]: sortOrder === 'asc' ? 1 : -1 } as Record<string, SortOrder>)
+    : ({ isCompleted: 1, dueDate: 1 } as Record<string, SortOrder>);
 
   const [totalItems, tasks] = await Promise.all([
     Task.countDocuments(filter),

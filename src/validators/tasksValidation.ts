@@ -3,8 +3,12 @@ import { isValidObjectId } from 'mongoose';
 
 export const createTaskSchema = z.object({
   title: z.string().trim().min(5).max(100),
+  description: z.string().trim().optional().default(''),
   priority: z.number().int().min(1).max(10).default(1),
-  completed: z.boolean().default(false),
+  isCompleted: z.boolean().default(false),
+  isPrivate: z.boolean().default(false),
+  category: z.string().trim().default('Todo'),
+  dueDate: z.coerce.date().default(() => new Date()),
 });
 
 export type CreateTaskDto = z.infer<typeof createTaskSchema>;
@@ -30,12 +34,12 @@ export const getTasksSchema = z.object({
 
   search: z.string().trim().optional(),
 
-  completed: z
+  isCompleted: z
     .enum(['true', 'false'])
     .transform((value) => value === 'true')
     .optional(),
 
-  sortBy: z.enum(['priority', 'createdAt']).default('createdAt'),
+  sortBy: z.enum(['priority', 'createdAt', 'dueDate']).default('createdAt'),
 
   sortOrder: z.enum(['asc', 'desc']).default('desc'),
 });
