@@ -35,15 +35,15 @@ export const loginUser = async (
 
     res.cookie('token', token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
+      secure: true,
+      sameSite: 'none',
       maxAge: 24 * 60 * 60 * 1000,
     });
 
     res.status(200).json({
       status: 200,
       message: 'Logged in successfully',
-      data: { user: { id: user._id, email: user.email } }, // Токен вже в куці!
+      data: { user: { id: user._id, email: user.email } },
     });
   } catch (error) {
     next(error);

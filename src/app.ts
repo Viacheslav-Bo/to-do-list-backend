@@ -20,7 +20,7 @@ app.use(
     origin: process.env.FRONTEND_DOMAIN || 'http://localhost:3001',
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
   }),
 );
 app.use(logger);
