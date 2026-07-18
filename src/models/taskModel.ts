@@ -1,4 +1,5 @@
 import { model, Schema } from 'mongoose';
+import { TASK_CATEGORIES } from '../constants/categories.js';
 
 const taskSchema = new Schema(
   {
@@ -33,7 +34,7 @@ const taskSchema = new Schema(
     },
     category: {
       type: String,
-      trim: true,
+      enum: TASK_CATEGORIES,
       default: 'Todo',
     },
     dueDate: {
@@ -51,5 +52,6 @@ taskSchema.index({ userId: 1, isCompleted: 1 });
 taskSchema.index({ userId: 1, priority: -1 });
 taskSchema.index({ userId: 1, category: 1 });
 taskSchema.index({ userId: 1, isCompleted: 1, dueDate: 1 });
+taskSchema.index({ userId: 1, isPrivate: 1 });
 
 export const Task = model('Task', taskSchema);
