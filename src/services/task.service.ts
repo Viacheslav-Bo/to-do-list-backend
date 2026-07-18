@@ -72,6 +72,13 @@ export async function getTasksService(
     Task.find(filter).sort(sort).skip(skip).limit(limit),
   ]);
 
+  console.log('===== GET TASKS =====');
+  console.log('Filter:', filter);
+  console.log('Limit:', limit);
+  console.log('Total in DB:', totalItems);
+  console.log('Returned:', tasks.length);
+  console.log('=====================');
+
   const totalPages = Math.ceil(totalItems / limit);
 
   return {
