@@ -25,7 +25,7 @@ export const buildTaskFilter = (
   dueToday?: boolean,
 ) => {
   const filter: Record<string, unknown> = {
-    userId,
+    userId: new mongoose.Types.ObjectId(userId),
   };
 
   if (search) {
@@ -61,12 +61,13 @@ export const buildTaskFilter = (
 export const buildTaskSort = (
   sortBy?: 'priority' | 'createdAt' | 'dueDate',
   sortOrder: 'asc' | 'desc' = 'desc',
-): Record<string, SortOrder> => {
-  const order: SortOrder = sortOrder === 'asc' ? 1 : -1;
+): Record<string, 1 | -1> => {
+  const order: 1 | -1 = sortOrder === 'asc' ? 1 : -1;
 
   if (!sortBy) {
     return {
       isCompleted: 1,
+      hasNoDueDate: 1,
       priority: -1,
       dueDate: 1,
       createdAt: -1,
@@ -77,6 +78,7 @@ export const buildTaskSort = (
     return {
       isCompleted: 1,
       priority: order,
+      hasNoDueDate: 1,
       dueDate: 1,
       createdAt: -1,
     };
@@ -85,6 +87,7 @@ export const buildTaskSort = (
   if (sortBy === 'dueDate') {
     return {
       isCompleted: 1,
+      hasNoDueDate: 1,
       dueDate: order,
       priority: -1,
       createdAt: -1,
@@ -125,11 +128,24 @@ export async function getTasksService(
   );
   const sort = buildTaskSort(sortBy, sortOrder);
 
-  const [totalItems, tasks] = await Promise.all([
-    Task.countDocuments(filter),
-    Task.find(filter).sort(sort).skip(skip).limit(limit),
+  const [result] = await Task.aggregate([
+    { $match: filter },
+    {
+      $addFields: {
+        hasNoDueDate: { $cond: [{ $ifNull: ['$dueDate', false] }, 0, 1] },
+      },
+    },
+    { $sort: sort },
+    {
+      $facet: {
+        items: [{ $skip: skip }, { $limit: limit }],
+        totalCount: [{ $count: 'count' }],
+      },
+    },
   ]);
 
+  const tasks = result.items;
+  const totalItems = result.totalCount[0]?.count ?? 0;
   const totalPages = Math.ceil(totalItems / limit);
 
   return {
