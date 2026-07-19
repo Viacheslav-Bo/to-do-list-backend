@@ -202,7 +202,7 @@ export async function getTaskStatsService(userId: string) {
           },
         ],
         upcomingDeadlines: [
-          { $match: { isCompleted: false } },
+          { $match: { isCompleted: false, dueDate: { $exists: true } } },
           { $sort: { dueDate: 1 } },
           { $limit: 5 },
           { $project: { title: 1, dueDate: 1, priority: 1, category: 1 } },
