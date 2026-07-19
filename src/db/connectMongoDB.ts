@@ -9,9 +9,8 @@ export const connectMongoDB = async () => {
       );
     }
 
-    await mongoose.connect(mongoUrl, {
-      dbName: 'ToDo',
-    });
+    await mongoose.connect(mongoUrl);
+
     console.log(
       `✅ MongoDB connected to database: ${mongoose.connection.name}`,
     );
