@@ -2,6 +2,7 @@ import { Task } from '../models/taskModel.js';
 import { SortOrder } from 'mongoose';
 import { z } from 'zod';
 import { getTasksSchema } from '../validators/tasksValidation.js';
+import mongoose from 'mongoose';
 
 type GetTasksOptions = z.infer<typeof getTasksSchema>;
 
@@ -139,5 +140,78 @@ export async function getTasksService(
     totalPages,
     hasPreviousPage: page > 1,
     hasNextPage: page < totalPages,
+  };
+}
+
+export async function getTaskStatsService(userId: string) {
+  const startOfDay = new Date();
+  startOfDay.setHours(0, 0, 0, 0);
+  const endOfDay = new Date();
+  endOfDay.setHours(23, 59, 59, 999);
+
+  const [result] = await Task.aggregate([
+    { $match: { userId: new mongoose.Types.ObjectId(userId) } },
+    {
+      $facet: {
+        total: [{ $count: 'count' }],
+        completed: [{ $match: { isCompleted: true } }, { $count: 'count' }],
+        dueTodayTotal: [
+          { $match: { dueDate: { $gte: startOfDay, $lte: endOfDay } } },
+          { $count: 'count' },
+        ],
+        dueTodayUndone: [
+          {
+            $match: {
+              isCompleted: false,
+              dueDate: { $gte: startOfDay, $lte: endOfDay },
+            },
+          },
+          { $count: 'count' },
+        ],
+        overdue: [
+          { $match: { isCompleted: false, dueDate: { $lt: startOfDay } } },
+          { $count: 'count' },
+        ],
+        priorityBreakdown: [
+          { $match: { isCompleted: false } },
+          {
+            $bucket: {
+              groupBy: '$priority',
+              boundaries: [1, 4, 8, 11],
+              default: 'other',
+              output: { count: { $sum: 1 } },
+            },
+          },
+        ],
+        upcomingDeadlines: [
+          { $match: { isCompleted: false } },
+          { $sort: { dueDate: 1 } },
+          { $limit: 5 },
+          { $project: { title: 1, dueDate: 1, priority: 1, category: 1 } },
+        ],
+      },
+    },
+  ]);
+
+  const count = (facet: { count: number }[]) => facet[0]?.count ?? 0;
+
+  const priorityBreakdown = { high: 0, medium: 0, low: 0 };
+  for (const bucket of result.priorityBreakdown as {
+    _id: number;
+    count: number;
+  }[]) {
+    if (bucket._id === 1) priorityBreakdown.low = bucket.count;
+    else if (bucket._id === 4) priorityBreakdown.medium = bucket.count;
+    else if (bucket._id === 8) priorityBreakdown.high = bucket.count;
+  }
+
+  return {
+    totalTasks: count(result.total),
+    completedTasks: count(result.completed),
+    dueTodayTotal: count(result.dueTodayTotal),
+    dueTodayUndone: count(result.dueTodayUndone),
+    overdueCount: count(result.overdue),
+    priorityBreakdown,
+    upcomingDeadlines: result.upcomingDeadlines,
   };
 }

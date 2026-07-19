@@ -6,6 +6,8 @@ import { updateTask } from '../controllers/tasks/updateTask.js';
 import { deleteTask } from '../controllers/tasks/deleteTask.js';
 import { getTaskById } from '../controllers/tasks/getTaskById.js';
 
+import { getTaskStats } from '../controllers/tasks/getTaskStats.js';
+
 import {
   createTaskSchema,
   updateTaskSchema,
@@ -20,6 +22,7 @@ tasksRoute.use(authenticate);
 
 tasksRoute.post('/', validateBody(createTaskSchema), createTask);
 tasksRoute.get('/', getTasks);
+tasksRoute.get('/stats', getTaskStats);
 tasksRoute.get('/:taskId', validateParams(taskIdSchema), getTaskById);
 tasksRoute.patch(
   '/:taskId',
