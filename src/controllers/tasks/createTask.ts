@@ -16,12 +16,11 @@ export const createTask = async (
       throw createHttpError(401, 'Unauthorized');
     }
 
-    const validatedData = createTaskSchema.parse(req.body);
+    const { dueDate, ...rest } = createTaskSchema.parse(req.body);
 
-    const task = await Task.create({
-      ...validatedData,
-      userId,
-    });
+    const task = await Task.create(
+      dueDate ? { ...rest, dueDate, userId } : { ...rest, userId },
+    );
 
     res.status(201).json({
       message: 'Task created successfully',
