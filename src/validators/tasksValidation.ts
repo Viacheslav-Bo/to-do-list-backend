@@ -5,7 +5,7 @@ import { TASK_CATEGORIES } from '../constants/categories.js';
 export const createTaskSchema = z.object({
   title: z.string().trim().min(5).max(100),
   description: z.string().trim().optional().default(''),
-  priority: z.number().int().min(1).max(10).default(1),
+  priority: z.number().int().min(1).max(10).default(5),
   isCompleted: z.boolean().default(false),
   isPrivate: z.boolean().default(false),
   category: z.enum(TASK_CATEGORIES).default('Todo'),
@@ -15,7 +15,17 @@ export const createTaskSchema = z.object({
 export type CreateTaskDto = z.infer<typeof createTaskSchema>;
 // ===========================================================
 
-export const updateTaskSchema = createTaskSchema.partial();
+const taskShape = {
+  title: z.string().trim().min(5).max(100),
+  description: z.string().trim(),
+  priority: z.number().int().min(1).max(10),
+  isCompleted: z.boolean(),
+  isPrivate: z.boolean(),
+  category: z.string().trim(),
+  dueDate: z.coerce.date(),
+};
+
+export const updateTaskSchema = z.object(taskShape).partial();
 
 export type UpdateTaskDto = z.infer<typeof updateTaskSchema>;
 
@@ -31,7 +41,7 @@ export type TaskIdDto = z.infer<typeof taskIdSchema>;
 // ==========================================================
 export const getTasksSchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
-  limit: z.coerce.number().int().min(5).max(20).default(10),
+  limit: z.coerce.number().int().min(5).max(100).default(10),
   search: z.string().trim().optional(),
   isCompleted: z
     .enum(['true', 'false'])

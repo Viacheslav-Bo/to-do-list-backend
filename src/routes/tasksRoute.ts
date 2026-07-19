@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import rateLimit from 'express-rate-limit';
 import { authenticate } from '../middleware/authenticate.js';
 import { getTasks } from '../controllers/tasks/getTasks.js';
 import { createTask } from '../controllers/tasks/createTask';
@@ -17,14 +16,7 @@ import { validateBody, validateParams } from '../middleware/validateBody';
 
 const tasksRoute = Router();
 
-const taskLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 300,
-  message: { message: 'Too many requests. Please try again later.' },
-});
-
 tasksRoute.use(authenticate);
-tasksRoute.use(taskLimiter);
 
 tasksRoute.post('/', validateBody(createTaskSchema), createTask);
 tasksRoute.get('/', getTasks);
