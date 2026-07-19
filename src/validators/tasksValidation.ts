@@ -9,7 +9,7 @@ export const createTaskSchema = z.object({
   isCompleted: z.boolean().default(false),
   isPrivate: z.boolean().default(false),
   category: z.enum(TASK_CATEGORIES).default('Todo'),
-  dueDate: z.coerce.date().default(() => new Date()),
+  dueDate: z.coerce.date().optional(),
 });
 
 export type CreateTaskDto = z.infer<typeof createTaskSchema>;
