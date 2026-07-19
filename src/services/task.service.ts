@@ -154,6 +154,8 @@ export async function getTaskStatsService(userId: string) {
     {
       $facet: {
         total: [{ $count: 'count' }],
+        active: [{ $match: { isCompleted: false } }, { $count: 'count' }],
+        private: [{ $match: { isPrivate: true } }, { $count: 'count' }],
         completed: [{ $match: { isCompleted: true } }, { $count: 'count' }],
         dueTodayTotal: [
           { $match: { dueDate: { $gte: startOfDay, $lte: endOfDay } } },
@@ -207,6 +209,8 @@ export async function getTaskStatsService(userId: string) {
 
   return {
     totalTasks: count(result.total),
+    activeTasks: count(result.active),
+    privateTasks: count(result.private),
     completedTasks: count(result.completed),
     dueTodayTotal: count(result.dueTodayTotal),
     dueTodayUndone: count(result.dueTodayUndone),
