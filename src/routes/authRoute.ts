@@ -14,7 +14,7 @@ const authRoute = Router();
 
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 10,
+  max: 1000,
   message: { message: 'Too many attempts. Try it later.' },
 });
 
