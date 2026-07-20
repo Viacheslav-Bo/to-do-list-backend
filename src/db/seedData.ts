@@ -5,12 +5,18 @@ const daysFromNow = (offset: number): Date => {
   return date;
 };
 
-export const demoUser = {
-  name: 'Demo User',
-  email: 'demouser@example.com',
-  password: '12345678',
-};
-
+export const demoUsers = [
+  {
+    name: 'Demo User',
+    email: 'demo@example.com',
+    password: '12345678',
+  },
+  {
+    name: 'Test User',
+    email: 'test@example.com',
+    password: '12345678',
+  },
+];
 export const demoTasks = [
   {
     title: 'Fix authentication bug',

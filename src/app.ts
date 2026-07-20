@@ -14,7 +14,7 @@ import userRoute from './routes/userRoute.js';
 const app = express();
 
 app.use(helmet());
-console.log('Frontend domain:', process.env.FRONTEND_DOMAIN); // Перевірте консоль сервера при запуску
+console.log('Frontend domain:', process.env.FRONTEND_DOMAIN);
 app.use(
   cors({
     origin: process.env.FRONTEND_DOMAIN || 'http://localhost:3001',
